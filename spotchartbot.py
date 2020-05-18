@@ -8,9 +8,9 @@ import spotipy.util as util
 from spotipy.oauth2 import SpotifyClientCredentials
 
 token_file = open("token.txt","r")
-token = token_file.read()
+token_telegram = token_file.read()
 
-updater = Updater(token=token, use_context=True)
+updater = Updater(token=token_telegram, use_context=True)
 
 dispatcher = updater.dispatcher
 
@@ -38,23 +38,20 @@ dispatcher.add_handler(caps_handler)
 if __name__ == '__main__':
     # updater.start_polling()
 
-    client_credentials_manager = SpotifyClientCredentials(client_id='ac', client_secret='secret')
+    client_credentials_manager = SpotifyClientCredentials()
     sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
+    username = 'carolinelima0'
     scope = 'user-library-read'
-    token = util.prompt_for_user_token('carolinelima0', scope)
+    token = util.prompt_for_user_token(username, scope)
 
-    results = sp.current_user_top_tracks(time_range='short_term', limit=10)
-    for i, item in enumerate(results['items']):
-        print(i, item['name'], '//', item['artists'][0]['name'])
-
-    # playlists = sp.user_playlists('manutunan')
-    # while playlists:
-    #     for i, playlist in enumerate(playlists['items']):
-    #         print("%4d %s %s" % (i + 1 + playlists['offset'], playlist['uri'], playlist['name']))
-    #     if playlists['next']:
-    #         playlists = sp.next(playlists)
-    #     else:
-    #         playlists = None
+    if token:
+        sp = spotipy.Spotify(auth=token)
+        results = sp.current_user_saved_tracks()
+        for item in results['items']:
+            track = item['track']
+            print(track['name'] + ' - ' + track['artists'][0]['name'])
+    else:
+        print("Can't get token for", username)
 
 
