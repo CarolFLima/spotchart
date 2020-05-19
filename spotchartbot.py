@@ -42,15 +42,15 @@ if __name__ == '__main__':
     sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
     username = 'carolinelima0'
-    scope = 'user-library-read'
+    scope = 'user-top-read'
     token = util.prompt_for_user_token(username, scope)
 
     if token:
         sp = spotipy.Spotify(auth=token)
-        results = sp.current_user_saved_tracks()
-        for item in results['items']:
-            track = item['track']
-            print(track['name'] + ' - ' + track['artists'][0]['name'])
+        # results = sp.current_user_saved_tracks()
+        results = sp.current_user_top_tracks(limit=20, offset=0, time_range='long_term')
+        for i, item in enumerate(results['items']):
+            print(i, item['name'], '-', item['artists'][0]['name'])
     else:
         print("Can't get token for", username)
 
