@@ -37,20 +37,14 @@ dispatcher.add_handler(caps_handler)
 
 if __name__ == '__main__':
     # updater.start_polling()
-
-    client_credentials_manager = SpotifyClientCredentials()
-    sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
-
-    username = 'carolinelima0'
-    scope = 'user-top-read'
-    token = util.prompt_for_user_token(username, scope)
+    username = '12179705535'
+    token = util.prompt_for_user_token(username)
 
     if token:
         sp = spotipy.Spotify(auth=token)
-        # results = sp.current_user_saved_tracks()
-        results = sp.current_user_top_tracks(limit=20, offset=0, time_range='long_term')
-        for i, item in enumerate(results['items']):
-            print(i, item['name'], '-', item['artists'][0]['name'])
+        playlists = sp.user_playlists(username)
+        for playlist in playlists['items']:
+            print(playlist['name'])
     else:
         print("Can't get token for", username)
 
